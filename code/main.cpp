@@ -9,7 +9,7 @@ int battery = -1;
 bool readroom = false;
 uint8_t *framebuffer;
 
-void init();
+void doorsign_init();
 
 void setup() {
     //begin things
@@ -31,7 +31,7 @@ void setup() {
     rtctimeset();
 
     if (!readRoom()) {
-        init();
+        doorsign_init();
     }
 
     connectmqtt();
@@ -45,7 +45,7 @@ void loop() {
 
 }
 
-void init() {
+void doorsign_init() {
     bool initmessage = false;
     Serial.println("Printing Error Picture ...");
 
