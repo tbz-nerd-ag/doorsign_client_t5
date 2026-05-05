@@ -10,12 +10,12 @@ static int EEPROM_SIZE = 512;
 static int ssidadd = 0, passadd = 20, idadd= 50, roomadd = 55, crcadd = 500;
 String ssid = "", password = "";
 int id = -1;
+String ssidfallback = "", passwordfallback = "";
 
 
 void readEEPROM() {
   //ssid and password for wifi
   //String ssid = "", password = "";
-  static String ssidfallback = "", passwordfallback = "";
 
   uint16_t sum = 0;
   uint8_t crcwifi;
@@ -24,7 +24,7 @@ void readEEPROM() {
 
   EEPROM.begin(EEPROM_SIZE);
 
-//check if EEPROM Address is initialized || didnt check corruption
+  //check if EEPROM Address is initialized || didnt check corruption
   if (EEPROM.read(ssidadd) != 0xFF) {
     ssid = EEPROM.readString(ssidadd);
     Serial.println("Found SSID Data in EEPROM ...");

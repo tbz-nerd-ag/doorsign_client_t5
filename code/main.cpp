@@ -9,6 +9,7 @@ int battery = -1;
 bool readroom = false;
 uint8_t *framebuffer;
 
+void doorsign_init();
 
 void setup() {
     //begin things
@@ -25,28 +26,40 @@ void setup() {
     Serial.println("EPD init ...");
     epd_init();
 
-    epd_poweron();
-    epd_clear();
-
-    epd_poweroff();
-
     readEEPROM();
-    connectwifi();
+    connectwifi("normal");
     rtctimeset();
-    
-    readroom = readRoom();
-    if (readroom == false)
-    {
-        Serial.println("Printing Error Picture ...");
-        errormenu(1);
-        //esp_deep_sleep(300000); //5min
+
+    if (!readRoom()) {
+        doorsign_init();
     }
+
+    connectmqtt();
+    sendmqtthello();
+
+    esp_sleep_enable_timer_wakeup(300000000);
+    esp_deep_sleep_start();
 }
 
 void loop() {
-    //eeprominfo();
-    delay(3000);
-    //readEEPROM();
-    delay(3000);
+
 }
 
+void doorsign_init() {
+    bool initmessage = false;
+    Serial.println("Printing Error Picture ...");
+
+    errormenu(1);
+
+    delay(2000);
+
+    connectmqtt();
+    sendmqtthello();
+
+    if (!initmessage) {
+        waitofinitmsg();
+    }
+
+    esp_sleep_enable_timer_wakeup(300000000);
+    esp_deep_sleep_start();
+}
